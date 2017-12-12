@@ -16,5 +16,5 @@ This is Berkeley AUTOLAB's Urban Driving Simulator.
    environment.rst
    state.rst
    objects.rst
-   
+   internal.rst   
    
