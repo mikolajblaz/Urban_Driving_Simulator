@@ -139,6 +139,7 @@ class UrbanDrivingEnv(gym.Env):
             observations = []
             for key in self.current_state.dynamic_objects['controlled_cars'].keys():
                 observations.append(self.featurizer.featurize(self.current_state, key))
+
         elif self.observation_type == 'bmp':
             assert(self.visualizer)
             self._render()
@@ -146,7 +147,20 @@ class UrbanDrivingEnv(gym.Env):
 
         return observations, reward, done, info_dict
 
+    def get_initial_observations(self):
 
+        if self.observation_type == 'raw':
+            observations = [state] * len(state.dynamic_objects['controlled_cars'])
+        elif self.observation_type == 'Q-LIDAR':
+            observations = []
+            for key in self.current_state.dynamic_objects['controlled_cars'].keys():
+                observations.append(self.featurizer.featurize(self.current_state, key))
+        elif self.observation_type == 'bmp':
+            assert(self.visualizer)
+            self._render()
+            observations = [self.visualizer.get_bitmap()] * len(state.dynamic_objects['controlled_cars'])
+
+        return observations
     def _reset(self, new_state=None):
         """
         Resets the environment to its initial state, or a new state
@@ -161,7 +175,6 @@ class UrbanDrivingEnv(gym.Env):
             self.init_state = new_state
             self.statics_rendered = False
         if self.randomize:
-            
             self.init_state.randomize()
 
         self.current_state = deepcopy(self.init_state)
@@ -193,6 +206,9 @@ class UrbanDrivingEnv(gym.Env):
                                    traffic_trajectories = traffic_trajectories,
                                    transparent_surface = transparent_surface)
             self.statics_rendered = True
+
+    def get_current_state(self):
+        return self.current_state
 
     def get_state_copy(self):
         return deepcopy(self.current_state)
