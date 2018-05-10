@@ -31,7 +31,7 @@ class Featurizer(object):
         How many "LIDAR" beams to project around the car
     """
     def __init__(self, config_data={}, beam_distance=300, n_arcs=9):
-        if Featurizer.global_config and not config_datar:
+        if Featurizer.global_config and not config_data:
             config_data = Featurizer.global_config
         self.arc_deltas = np.arange(n_arcs + 1) / (float(n_arcs) / 2) - 1
         self.arc_deltas = [i*np.pi/2 for i in self.arc_deltas]
